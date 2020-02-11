@@ -3,7 +3,8 @@ const db = require("../data/db-config");
 module.exports = {
   getProjects,
   getProjectsById,
-  getProjectTasks
+  getProjectTasks,
+  getProjectResources
 };
 
 function getProjects() {
@@ -15,16 +16,15 @@ function getProjectsById(id) {
     .where("projects.id", id)
     .first()
     .then(project => {
-      let tasks = db("tasks").where("project_id", project.id);
+      // return db("tasks").where("project_id", project.id);
+      // // return project;
+
+      const tasks = new propmise(db("tasks").where("project_id", project.id));
+
       return {
         ...project,
-        tasks: [...tasks]
+        tasks: tasks
       };
-
-      // return {
-      //   ...project,
-      //   tasks: tasks
-      // };
     });
 }
 
@@ -42,4 +42,10 @@ function getProjectTasks(id) {
     );
 }
 
-// (task.completed === 1 ? true : false)
+function getProjectResources(id) {
+  return db("resources as r")
+    .join("project_resources as pr", "pr.resource_id", "r.id")
+    .join("projects as p", "p.id", "pr.project_id")
+    .select("r.name")
+    .where("pr.project_id", id);
+}
