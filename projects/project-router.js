@@ -3,6 +3,25 @@ const Project = require("./project-model");
 
 const router = express.Router();
 
+router.get("/resources", (req, res) => {
+  Project.getReourcesList()
+    .then((myResources) => {
+      res.json(myResources);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "error getting resources" });
+    });
+});
+router.get("/tasks", (req, res) => {
+  Project.getTaskList()
+    .then((myTasks) => {
+      res.json(myTasks);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "error getting tasks" });
+    });
+});
+
 router.get("/", (req, res) => {
   Project.getProjects()
     .then((projects) => {
@@ -44,6 +63,39 @@ router.get("/:id/resources", (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({ message: "error getting resources" });
+    });
+});
+
+router.post("/addResources", (req, res) => {
+  const newResource = req.body;
+  Project.addProjectResources(newResource)
+    .then((myResoruce) => {
+      res.status(201).json(myResoruce);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "error adding resources" });
+    });
+});
+
+router.post("/addProject", (req, res) => {
+  const newProject = req.body;
+  Project.addProject(newProject)
+    .then((myProject) => {
+      res.status(201).json(myProject);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "error adding project" });
+    });
+});
+
+router.post("/addTask", (req, res) => {
+  const newTask = req.body;
+  Project.addTask(newTask)
+    .then((myTask) => {
+      res.status(201).json(myTask);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "error adding task" });
     });
 });
 
