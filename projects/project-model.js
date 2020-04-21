@@ -4,7 +4,7 @@ module.exports = {
   getProjects,
   getProjectsById,
   getProjectTasks,
-  getProjectResources
+  getProjectResources,
 };
 
 function getProjects() {
@@ -12,31 +12,29 @@ function getProjects() {
 }
 
 function getProjectsById(id) {
-  return db("projects")
-    .where("projects.id", id)
-    .first()
-    .then(project => {
-      // return db("tasks").where("project_id", project.id);
-      // // return project;
+  return db("projects").where("projects.id", id).first();
+  // .then(project => {
+  //   // return db("tasks").where("project_id", project.id);
+  //   // // return project;
 
-      const tasks = new propmise(db("tasks").where("project_id", project.id));
+  //   const tasks = new propmise(db("tasks").where("project_id", project.id));
 
-      return {
-        ...project,
-        tasks: tasks
-      };
-    });
+  //   return {
+  //     ...project,
+  //     tasks: tasks
+  //   };
+  // });
 }
 
 function getProjectTasks(id) {
   return db("tasks as t")
     .join("projects as p", "p.id", "t.project_id")
     .where("t.project_id", id)
-    .then(tasks =>
-      tasks.map(task => {
+    .then((tasks) =>
+      tasks.map((task) => {
         return {
           ...task,
-          completed: task.completed === 1 ? true : false
+          completed: task.completed === 1 ? true : false,
         };
       })
     );
